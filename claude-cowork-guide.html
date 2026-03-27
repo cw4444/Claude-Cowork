@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Getting Started with Claude Cowork</title>
+  <style>
+    :root {
+      --coral: #D97757;
+      --coral-light: #f5e6e0;
+      --coral-dark: #b85f3f;
+      --cream: #FAF8F5;
+      --sand: #F2EDE6;
+      --charcoal: #2D2D2D;
+      --mid-gray: #666;
+      --light-gray: #e5e0d8;
+      --white: #fff;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --shadow-hover: 0 6px 24px rgba(0,0,0,0.13);
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      line-height: 1.7;
+    }
+
+    /* ── Hero ─────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #2D2D2D 0%, #4a3728 60%, var(--coral-dark) 100%);
+      color: var(--white);
+      padding: 72px 24px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 30%, rgba(217,119,87,0.25) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(217,119,87,0.25);
+      border: 1px solid rgba(217,119,87,0.5);
+      color: #f4b898;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: #f4b898; }
+    .hero p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.75);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 99px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .btn-primary {
+      background: var(--coral);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: var(--coral-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(217,119,87,0.4); }
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.35);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.6); transform: translateY(-1px); }
+
+    /* ── Nav tabs ─────────────────────────────────────── */
+    .nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--light-gray);
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    }
+    .nav-tabs {
+      display: flex;
+      overflow-x: auto;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 16px;
+      gap: 4px;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab {
+      flex-shrink: 0;
+      padding: 14px 18px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--mid-gray);
+      cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .nav-tab:hover { color: var(--coral); }
+    .nav-tab.active { color: var(--coral); border-bottom-color: var(--coral); }
+
+    /* ── Main layout ──────────────────────────────────── */
+    .main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── Section header ───────────────────────────────── */
+    .section-header {
+      margin-bottom: 32px;
+    }
+    .section-header h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+    .section-header p {
+      color: var(--mid-gray);
+      font-size: 1.02rem;
+      max-width: 640px;
+    }
+
+    /* ── Cards ────────────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.18s, transform 0.18s;
+    }
+    .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+    .card-icon {
+      width: 44px; height: 44px;
+      background: var(--coral-light);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+    .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .card p { font-size: 0.9rem; color: var(--mid-gray); line-height: 1.55; }
+
+    /* ── Highlighted quote / callout ──────────────────── */
+    .callout {
+      background: var(--coral-light);
+      border-left: 4px solid var(--coral);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 18px 22px;
+      margin-bottom: 28px;
+      font-size: 0.97rem;
+      color: var(--charcoal);
+    }
+    .callout strong { color: var(--coral-dark); }
+
+    /* ── Steps ────────────────────────────────────────── */
+    .steps { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+    .step {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      box-shadow: var(--shadow);
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      background: var(--coral);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .step-body h3 { font-size: 0.98rem; font-weight: 700; margin-bottom: 4px; }
+    .step-body p { font-size: 0.9rem; color: var(--mid-gray); }
+    .step-body a { color: var(--coral); text-decoration: none; font-weight: 600; }
+    .step-body a:hover { text-decoration: underline; }
+
+    /* ── Chip tags ────────────────────────────────────── */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .chip {
+      background: var(--sand);
+      border: 1px solid var(--light-grayi;
+      border-radius: 99px;
+      padding: 5px 14px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+
+    /* ── Two-col layout ───────────────────────────────── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+    @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── Tip boxes ────────────────────────────────────── */
+    .tip-box {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      box-shadow: var(--shadow);
+    }
+    .tip-box h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tip-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tip-box ul li {
+      font-size: 0.88rem;
+      color: var(--mid-gray);
+      padding-left: 18px;
+      position: relative;
+    }
+    .tip-box ul li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--coral);
+      font-weight: 700;
+    }
+
+    /* ── Link list ────────────────────────────────────── */
+    .link-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .link-card {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      color: var(--charcoal);
+      box-shadow: var(--shadow);
+      transition: all 0.18s;
+    }
+    .link-card:hover { box-shadow: var(--shadow-hover); transform: translateX(4px); border-color: var(--coral); }
+    .link-card-icon {
+      width: 40px; height: 40px;
+      background: var(--coral-light);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .link-card-body { flex: 1; }
+    .link-card-body strong { display: block; font-size: 0.95rem; margin-bottom: 2px; }
+    .link-card-body span { font-size: 0.83rem; color: var(--mid-gray); }
+    .link-card-arrow { color: var(--coral); font-weight: 700; font-size: 1.1rem; }
+
+    /* ── CTA buttons section ──────────────────────────── */
+    .cta-section {
+      background: linear-gradient(135deg, #2D2D2D, #4a3728);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      text-align: center;
+      color: var(--white);
+      margin-top: 12px;
+    }
+    .cta-section h3 { font-size: 1.3rem; margin-bottom: 10px; }
+    .cta-section p { color: rgba(255,255,255,0.65); margin-bottom: 24px; font-size: 0.95rem; }
+    .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Badge / pill ─────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      background: var(--coral-light);
+      color: var(--coral-dark);
+      border-radius: 99px;
+      padding: 2px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-left: 6px;
+    }
+
+    /* ── Accordion (for tips) ─────────────────────────── */
+    .accordion { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .accordion-item {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .accordion-header {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--charcoal);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background 0.15s;
+    }
+    .accordion-header:hover { background: var(--sand); }
+    .accordion-header .acc-left { display: flex; align-items: center; gap: 10px; }
+    .accordion-chevron {
+      font-size: 1rem;
+      color: var(--coral);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
+    .accordion-body {
+      display: none;
+      padding: 0 20px 18px;
+      font-size: 0.9rem;
+      color: var(--mid-gray);
+      line-height: 1.65;
+    }
+    .accordion-item.open .accordion-body { display: block; }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding: 32px 20px;
+      color: var(--mid-gray);
+      font-size: 0.83rem;
+      border-top: 1px solid var(--light-gray);
+    }
+    .footer a { color: var(--coral); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ───────────────────────────────────── */
+    @media (max-width: 480px) {
+      .hero { padding: 48px 16px 40px; }
+      .main { padding: 28px 14px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ──────────── HERO ──────────── -->
+<div class="hero">
+  <div class="hero-badge">✦ Research Preview</div>
+  <h1>Getting Started with<br><span>Claude Cowork</span></h1>
+  <p>Your friendly guide to Anthropic's agentic desktop mode — everything in one place, no terminal required.</p>
+  <div class="hero-buttons">
+    <a href="https://claude.ai/download" target="_blank" class="btn btn-primary">⬇ Download Claude Desktop</a>
+    <a href="https://support.claude.com/en/articles/13345190-get-started-with-cowork" target="_blank" class="btn btn-outline">📖 Official Docs</a>
+  </div>
+</div>
+
+<!-- ──────────── NAV ──────────── -->
+<div class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-section="overview">Overview</button>
+    <button class="nav-tab" data-section="whatyoucando">What You Can Do</button>
+    <button class="nav-tab" data-section="context">Giving Claude Context</button>
+    <button class="nav-tab" data-section="plugins">Plugins & Skills</button>
+    <button class="nav-tab" data-section="tips">Tips & Tricks</button>
+    <button class="nav-tab" data-section="resources">Docs & Resources</button>
+  </div>
+</div>
+
+<!-- ──────────── MAIN ──────────── -->
+<div class="main">
+
+  <!-- ── OVERVIEW ── -->
+  <section class="section active" id="overview">
+    <div class="section-header">
+      <h2>What is Claude Cowork?</h2>
+      <p>The short version: it's Claude doing the heavy lifting, not just answering questions.</p>
+    </div>
+
+    <div class="callout">
+      <strong>"Most AI tools are built around the prompt. Claude Cowork is built around the outcome."</strong><br>
+      — Anthropic. Instead of going back and forth, you hand Cowork a goal and come back to a finished deliverable.
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h3>Agentic, not just chatty</h3>
+        <p>Cowork can autonomously take multi-step actions — opening files, running subtasks, and producing polished outputs — without you steering every move.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💻</div>
+        <h3>Lives on your desktop</h3>
+        <p>It runs locally via the Claude Desktop app, with direct access to your files and folders — no manual uploads needed.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3>Runs in a secure sandbox</h3>
+        <p>Cowork operates in an isolated virtual machine on your computer, keeping file and network access controlled and safe.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏱</div>
+        <h3>No timeout stress</h3>
+        <p>Unlike regular chat, Cowork handles long-running tasks without sessions timing out mid-way through your work.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <h3>Professional outputs</h3>
+        <p>Think actual Excel files with formulas, formatted PowerPoints, structured Word docs — not just text to copy-paste.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧪</div>
+        <h3>Research preview</h3>
+        <p>Cowork is actively evolving. Available on paid plans (Pro, Max, Team, Enterprise) via the Claude Desktop app.</p>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top:12px">
+      <h2>Getting Set Up</h2>
+      <p>You're three steps away from your first Cowork task.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Download Claude Desktop</h3>
+          <p>Head to <a href="https://claude.ai/download" target="_blank">claude.ai/download</a> and grab the app for macOS (11+) or Windows 10+. Install and sign in with your Anthropic account.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Make sure you're on a paid plan</h3>
+          <p>Cowork requires Pro, Max, Team, or Enterprise. Free accounts don't have access yet. Check <a href="https://claude.ai/settings/billing" target="_blank">your billing settings</a> to confirm.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Switch to the Cowork tab</h3>
+          <p>In the Claude Desktop app, you'll see a "Cowork" tab next to "Chat". Click it, describe your task, review Claude's plan, and let it go.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h3>Ready to dive in?</h3>
+      <p>Ask Claude directly for help with your first task, or explore the docs to get oriented.</p>
+      <div class="cta-buttons">
+        <a href="https://claude.ai/download" target="_blank" class="btn btn-primary">⬇ Download the App</a>
+        <a href="https://www.anthropic.com/product/claude-cowork" target="_blank" class="btn btn-outline">🌐 Cowork Product Page</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHAT YOU CAN DO ── -->
+  <section class="section" id="whatyoucando">
+    <div class="section-header">
+      <h2>What You Can Do with Cowork</h2>
+      <p>From files to research to full-blown reports — here's what Cowork actually handles.</p>
+    </div>
+
+    <div class="chips">
+      <span class="chip">📁 File Organisation</span>
+      <span class="chip">📊 Spreadsheets</span>
+      <span class="chip">📝 Documents</span>
+      <span class="chip">🔍 Research</span>
+      <span class="chip">📊 Data Extraction</span>
+      <span class="chip">🗓 Scheduled Tasks</span>
+      <span class="chip">🤝 Connectors</span>
+      <span class="chip">📱 Mobile via Dispatch</span>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">📁</div>
+        <h3>File Organisation</h3>
+        <p>Point Cowork at a messy folder and it'll rename, sort, deduplicate, and organise your files by type, date, or custom rules.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📝</div>
+        <h3>Document Assembly</h3>
+        <p>Give it a pile of sources and it synthesises them into a structured draft — reports, memos, summaries, proposals.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h3>Research Synthesis</h3>
+        <p>Pull key findings from multiple documents, web searches, or data sources into a clean, reviewable summary.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>Data Extraction</h3>
+        <p>Feed it contracts, reports, or receipts — it'll pull structured data into tables, spreadsheets, or whatever format you need.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <h3>Spreadsheets & Presentations</h3>
+        <p>Produces real Excel files with conditional formatting and formulas, plus properly formatted PowerPoint presentations.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔄</div>
+        <h3>Scheduled & Recurring Tasks</h3>
+        <p>Set up a task once — like a weekly summary or a daily report — and Cowork runs it automatically on your schedule.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔗</div>
+        <h3>Connectors (38+)</h3>
+        <p>Connect to Notion, Slack, Google Drive, Asana and 35+ other apps to pull in live data and take action across your tools.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📱</div>
+        <h3>Dispatch (Mobile)</h3>
+        <p>Kick off tasks from your phone. Scan a QR code to pair the Claude mobile app with your desktop — your computer does the work while you're out.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Who is Cowork for?</strong> It's designed for non-technical knowledge workers — researchers, analysts, legal teams, finance, operations — anyone who deals with documents and data every day and would rather focus on the judgment calls than the assembly work.
+    </div>
+
+    <div class="section-header" style="margin-top:4px">
+      <h2>Projects</h2>
+      <p>Stay organised with dedicated workspaces for each area of your work.</p>
+    </div>
+
+    <div class="step" style="margin-bottom:14px">
+      <div class="step-body" style="padding-left:0">
+        <p>Projects give you a dedicated local folder with its own context files, working files, scheduled tasks, and conversation history. Think of it like having separate desks for separate jobs — your memory and files don't bleed between them. Create one per client, project, or workflow.</p>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h3>Want to learn more about what Cowork can do?</h3>
+      <p>The official product page and help centre have the latest feature details.</p>
+      <div class="cta-buttons">
+        <a href="https://www.anthropic.com/product/claude-cowork" target="_blank" class="btn btn-primary">🌐 Cowork Product Page</a>
+        <a href="https://support.claude.com/en/articles/13345190-get-started-with-cowork" target="_blank" class="btn btn-outline">📖 Help Centre Article</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTEXT ── -->
+  <section class="section" id="context">
+    <div class="section-header">
+      <h2>Giving Claude Context</h2>
+      <p>Cowork out of the box is fine. Cowork with good context is genuinely impressive.</p>
+    </div>
+
+    <div class="callout">
+      <strong>Pro tip from the community:</strong> The gap between a mediocre Cowork setup and an excellent one is about 30 minutes of upfront configuration. Instead of writing longer prompts, give Claude better source material.
+    </div>
+
+    <div class="two-col">
+      <div class="tip-box">
+        <h3>⚙️ Global Instructions</h3>
+        <ul>
+          <li>Go to <strong>Settings → Cowork</strong> in the desktop app</li>
+          <li>Write your preferred tone, output format, and working style</li>
+          <li>These apply across all Cowork tasks by default</li>
+          <li>Example: "Always write in a concise, plain-English style. Avoid jargon."</li>
+        </ul>
+      </div>
+      <div class="tip-box">
+        <h3>📂 Folder / Project Instructions</h3>
+        <ul>
+          <li>Add instructions specific to a project folder or workspace</li>
+          <li>Useful when different projects need different styles or rules</li>
+          <li>Example: one project may be client-facing (formal), another internal (casual)</li>
+          <li>Set these when selecting a local folder in a Project</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top:4px">
+      <h2>Context Files</h2>
+      <p>The single biggest upgrade you can make to your Cowork setup.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Create a context folder</h3>
+          <p>Make a folder (e.g. <code>_context/</code>) in your project. This is where you'll store background info for Claude to reference.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Add relevant background files</h3>
+          <p>Think: a company overview, your role description, terminology glossary, example outputs you like, key contacts, brand voice guide, recurring report templates.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Reference them in your task</h3>
+          <p>When starting a task, point Claude to your context folder. It'll read the files and use them to calibrate its output to your specific needs.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top:8px">
+      <h2>What Makes a Good Task Description?</h2>
+    </div>
+
+    <div class="two-col">
+      <div class="tip-box">
+        <h3>✅ Include these things</h3>
+        <ul>
+          <li>What the finished output should look like</li>
+          <li>The audience (internal team? client? exec?)</li>
+          <li>The format you want (Excel, Word, PDF, Markdown...)</li>
+          <li>Any specific constraints or must-haves</li>
+          <li>Where to find the source files</li>
+        </ul>
+      </div>
+      <div class="tip-box">
+        <h3>❌ Avoid these pitfalls</h3>
+        <ul>
+          <li>Being vague about the desired outcome</li>
+          <li>Forgetting to specify the output format</li>
+          <li>Assuming Claude knows your company's jargon</li>
+          <li>Giving one huge multi-objective task (break it up!)</li>
+          <li>Skipping the review step before Claude executes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h3>Not sure how to structure a task?</h3>
+      <p>Jump into Claude and ask it to help you write the brief — meta, but it works brilliantly.</p>
+      <div class="cta-buttons">
+        <a href="https://claude.ai" target="_blank" class="btn btn-primary">💬 Open Claude Chat</a>
+        <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" class="btn btn-outline">✍️ Prompting Guide</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PLUGINS & SKILLS ── -->
+  <section class="section" id="plugins">
+    <div class="section-header">
+      <h2>Plugins & Skills</h2>
+      <p>The quickest way to level up Cowork for your specific kind of work.</p>
+    </div>
+
+    <div class="callout">
+      Plugins bundle together <strong>skills</strong>, <strong>connectors</strong>, and <strong>sub-agents</strong> into one ready-made package — so you don't have to set everything up from scratch.
+    </div>
+
+    <div class="section-header" style="margin-top:4px">
+      <h2>Installing Plugins</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Open the Cowork tab in Claude Desktop</h3>
+          <p>Plugins live inside Cowork, not in the regular Chat tab.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Click "Customize" in the left sidebar</h3>
+          <p>This opens the customisation panel where plugins, skills, and connectors live.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Browse and install</h3>
+          <p>Click "Browse plugins" to see what's available. Hit Install on anything relevant. Plugins are saved locally on your machine.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Use skills with "/" or "+"</h3>
+          <p>Once installed, access plugin skills inside a conversation by typing <code>/</code> or clicking the <code>+</code> button to see what's available.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top:8px">
+      <h2>Available Plugin Categories</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">💼</div>
+        <h3>Sales & Finance</h3>
+        <p>Pre-built workflows for pipeline tracking, financial modelling, expense reporting, and deal analysis.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚖️</div>
+        <h3>Legal</h3>
+        <p>Contract review, clause extraction, document comparison, and summarisation workflows.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📣</div>
+        <h3>Marketing</h3>
+        <p>Content creation, campaign briefs, competitive research, and social copy generation.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">👥</div>
+        <h3>HR & Operations</h3>
+        <p>Process documentation, onboarding materials, job description drafting, and policy summaries.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>Data & Engineering</h3>
+        <p>Data cleaning, transformation scripts, analysis summaries, and technical documentation.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎨</div>
+        <h3>Design & Product</h3>
+        <p>PRD drafting, user research synthesis, feature spec writing, and design critique templates.</p>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top:8px">
+      <h2>Sub-agents: Parallel Power</h2>
+    </div>
+
+    <div class="card" style="margin-bottom:28px">
+      <div class="card-icon">⚡</div>
+      <h3>Work in parallel, not in sequence</h3>
+      <p style="margin-top:8px">Sub-agents let Cowork split work across multiple Claude instances at once. Processing 10 files one-by-one might take ~30 minutes. Running them in parallel via sub-agents: around 4 minutes. Look for plugins that include sub-agent support for batch processing tasks.</p>
+    </div>
+
+    <div class="cta-section">
+      <h3>Want to build your own plugin?</h3>
+      <p>Anthropic has open-source plugin templates on GitHub, and there's a built-in "Plugin Create" plugin to help you build from scratch.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/anthropics/knowledge-work-plugins" target="_blank" class="btn btn-primary">⭐ Open Source Plugins on GitHub</a>
+        <a href="https://support.claude.com/en/articles/13837440-use-plugins-in-cowork" target="_blank" class="btn btn-outline">📖 Plugin Docs</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TIPS ── -->
+  <section class="section" id="tips">
+    <div class="section-header">
+      <h2>Tips & Tricks</h2>
+      <p>Stuff the community has figured out — so you don't have to.</p>
+    </div>
+
+    <div class="accordion">
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span class="acc-left">🗂️ Use Projects to stay sane</span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          Projects give each area of your work its own memory, files, and scheduled tasks. Memory doesn't carry over between standalone sessions — only within Projects. If you want Claude to remember context between sessions, always work inside a Project.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span class="acc-left">✂️ Break big tasks into chunks</span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          Tested by the community: one giant task with many objectives produces noticeably worse results than splitting it into focused, smaller tasks. Instead of "do everything for my monthly report", break it into: "extract figures from these 5 files", then "synthesise into a summary", then "format as a Word doc". Same logic applies to skills — multiple focused skills beat one mega-skill.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span class="acc-left">⏰ Set up scheduled recurring tasks</span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          Scheduled tasks are one of the most underused Cowork features. Describe a recurring job once — weekly team summary, daily inbox triage, monthly report generation — and Cowork runs it automatically. Find this under the Cowork tab in the app.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span class="acc-left">👀 Always review the plan before executing</span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          Before Cowork starts working, it shows you its approach. Don't skip this step! This is your chance to catch misunderstandings, redirect the scope, or add constraints you forgot to mention. A 30-second review here can save you a 10-minute redo.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span class="acc-left">📱 Use Dispatch for mobile task kicking</span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          Dispatch lets you start and monitor Cowork tasks from your phone. Scan the QR code in the desktop app to pair your Claude mobile app. Your desktop then does the heavy lifting while you're away from your desk — handy for long tasks you want to fire off during a commute.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span class="acc-left">📎 Keep your context files lean and relevant</span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          More context isn't always better. A focused 2-page company brief will outperform a sprawling 40-page doc where the key info is buried. Keep context files concise, clearly structured, and specific to what Claude actually needs for that project.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span class="acc-left">🔌 Connect your tools with Connectors</span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          Cowork has 38+ connectors for popular apps like Notion, Slack, Google Drive, Asana, and more. Connecting these means Claude can pull live data (rather than relying on uploaded files) and can take actions in those tools on your behalf — like creating Notion pages or sending Slack messages.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-header">
+          <span class="acc-left">🚫 Know what Cowork isn't suited for</span>
+          <span class="accordion-chevron">▾</span>
+        </button>
+        <div class="accordion-body">
+          Keep in mind: the desktop app must stay open during tasks. Sessions aren't shareable with others. And Cowork isn't currently suitable for regulated workloads that require audit logs (e.g. certain compliance or legal contexts). For those use cases, check with your IT or compliance team first.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cta-section">
+      <h3>Want even more tips?</h3>
+      <p>The community has done a lot of testing — check out these deep dives.</p>
+      <div class="cta-buttons">
+        <a href="https://karozieminski.substack.com/p/claude-cowork-guide-plugins-memory-sub-agents-tips" target="_blank" class="btn btn-primary">📰 50+ Tested Tips (Community)</a>
+        <a href="https://www.the-ai-corner.com/p/claude-cowork-setup-guide" target="_blank" class="btn btn-outline">🛠 Setup Guide Deep Dive</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESOURCES ── -->
+  <section class="section" id="resources">
+    <div class="section-header">
+      <h2>Docs & Resources</h2>
+      <p>Everything worth bookmarking — official and community.</p>
+    </div>
+
+    <div class="section-header" style="margin-top:4px">
+      <h2 style="font-size:1.2rem">📖 Official Anthropic Docs</h2>
+    </div>
+
+    <div class="link-list">
+      <a href="https://www.anthropic.com/product/claude-cowork" target="_blank" class="link-card">
+        <div class="link-card-icon">🌐</div>
+        <div class="link-card-body">
+          <strong>Claude Cowork Product Page</strong>
+          <span>anthropic.com — The official overview of what Cowork is and does</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://support.claude.com/en/articles/13345190-get-started-with-cowork" target="_blank" class="link-card">
+        <div class="link-card-icon">🚀</div>
+        <div class="link-card-body">
+          <strong>Get Started with Cowork</strong>
+          <span>support.claude.com — Official getting started guide from Anthropic</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://support.claude.com/en/articles/13837440-use-plugins-in-cowork" target="_blank" class="link-card">
+        <div class="link-card-icon">🔌</div>
+        <div class="link-card-body">
+          <strong>Using Plugins in Cowork</strong>
+          <span>support.claude.com — How to find, install, and use plugins</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://support.anthropic.com/en/articles/10065433-installing-claude-for-desktop" target="_blank" class="link-card">
+        <div class="link-card-icon">💻</div>
+        <div class="link-card-body">
+          <strong>Installing Claude Desktop</strong>
+          <span>support.anthropic.com — System requirements and installation steps</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://docs.anthropic.com/en/release-notes/claude-apps" target="_blank" class="link-card">
+        <div class="link-card-icon">📋</div>
+        <div class="link-card-body">
+          <strong>Release Notes</strong>
+          <span>docs.anthropic.com — Latest feature updates and changes</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" class="link-card">
+        <div class="link-card-icon">✍️</div>
+        <div class="link-card-body">
+          <strong>Prompt Engineering Guide</strong>
+          <span>docs.anthropic.com — How to write great prompts and task descriptions for Claude</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://github.com/anthropics/knowledge-work-plugins" target="_blank" class="link-card">
+        <div class="link-card-icon">⭐</div>
+        <div class="link-card-body">
+          <strong>Open Source Plugins (GitHub)</strong>
+          <span>github.com/anthropics — 11+ official plugin templates for knowledge workers</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="section-header" style="margin-top:16px">
+      <h2 style="font-size:1.2rem">🗞 Community Deep Dives</h2>
+    </div>
+
+    <div class="link-list">
+      <a href="https://karozieminski.substack.com/p/claude-cowork-guide-plugins-memory-sub-agents-tips" target="_blank" class="link-card">
+        <div class="link-card-icon">📰</div>
+        <div class="link-card-body">
+          <strong>50+ Tested Cowork Tips — Karo Zieminski</strong>
+          <span>Substack — Plugins, memory, sub-agents, and real-world tested workflows</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://rogerwong.me/2026/03/claude-cowork-guide-56-tips" target="_blank" class="link-card">
+        <div class="link-card-icon">💡</div>
+        <div class="link-card-body">
+          <strong>56 Cowork Tips — Roger Wong</strong>
+          <span>rogerwong.me — A comprehensive community guide to getting the most from Cowork</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://www.the-ai-corner.com/p/claude-cowork-setup-guide" target="_blank" class="link-card">
+        <div class="link-card-icon">🛠</div>
+        <div class="link-card-body">
+          <strong>Cowork Setup Guide — The AI Corner</strong>
+          <span>the-ai-corner.com — Context files, instructions, plugins, and workflows</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://www.cohorte.co/ai-articles/how-to-set-up-claude-cowork-files-instructions-plugins-and-connectors-2026" target="_blank" class="link-card">
+        <div class="link-card-icon">📚</div>
+        <div class="link-card-body">
+          <strong>Cowork Files, Instructions & Connectors — Cohorte</strong>
+          <span>cohorte.co — Practical walkthrough of the full Cowork setup process</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+      <a href="https://www.productcompass.pm/p/claude-cowork-guide" target="_blank" class="link-card">
+        <div class="link-card-icon">🧭</div>
+        <div class="link-card-body">
+          <strong>Claude Cowork for PMs — Paweł Huryn</strong>
+          <span>productcompass.pm — A product manager's guide to using Cowork effectively</span>
+        </div>
+        <span class="link-card-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="cta-section">
+      <h3>Still have questions?</h3>
+      <p>Claude itself is always a great first port of call — just ask in the Chat tab or within a Cowork session.</p>
+      <div class="cta-buttons">
+        <a href="https://claude.ai" target="_blank" class="btn btn-primary">💬 Ask Claude Directly</a>
+        <a href="https://support.claude.com" target="_blank" class="btn btn-outline">🆘 Claude Help Centre</a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /main -->
+
+<!-- ──────────── FOOTER ──────────── -->
+<div class="footer">
+  Built with ❤️ using Claude Cowork · Content sourced from <a href="https://www.anthropic.com" target="_blank">Anthropic</a> official docs and community guides · <a href="https://support.claude.com" target="_blank">support.claude.com</a>
+</div>
+
+<script>
+  // Tab navigation
+  const tabs = document.querySelectorAll('.nav-tab');
+  const sections = document.querySelectorAll('.section');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.section;
+      tabs.forEach(t => t.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const item = header.closest('.accordion-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
