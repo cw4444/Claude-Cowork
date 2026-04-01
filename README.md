@@ -30,4 +30,7 @@ It's a friendly, no-jargon guide to getting started with Claude Cowork — Anthr
 
 ---
 
-*Built with Claude Cowork · [docs.claude.ai](https://docs.claude.ai)*
+*Built with Claude Cowork · [docs.claude.ai](https://docs.claude.ai)
+
+## License
+This software is currently not licensed for commercial use. If you’d like to use this in a business setting or install it professionally, please contact me at cw4444@gmail.com
